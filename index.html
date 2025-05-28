@@ -1,48 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kalkulator dengan Jam dan Kalender</title>
+  <title>Aplikasi Belajar - Kalkulator, Jam, Kalender, Stopwatch, Timer</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      padding: 20px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .nav button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #ddd;
+    }
+
+    .nav button.active {
+      background: #ff9500;
+      color: white;
     }
 
     .container {
       display: flex;
       gap: 20px;
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
     }
 
     .clock {
       font-size: 2rem;
       padding: 20px;
+      margin-bottom: 10px;
       background: #222;
       color: white;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 150px;
+      text-align: center;
+      width: 100%;
     }
 
-    .calculator {
-      background: #fff;
+    .content {
+      background: white;
       padding: 20px;
-      border-radius: 10px;
-      flex-grow: 1;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 100%;
     }
 
+    .hidden {
+      display: none;
+    }
+
+    /* Kalkulator */
     #display {
       width: 100%;
       height: 40px;
@@ -61,7 +81,7 @@
       justify-content: center;
     }
 
-    button {
+    button.calc-btn {
       padding: 15px;
       font-size: 1.2rem;
       border: none;
@@ -70,7 +90,7 @@
       cursor: pointer;
     }
 
-    button:hover {
+    button.calc-btn:hover {
       background: #ddd;
     }
 
@@ -79,168 +99,195 @@
       color: white;
     }
 
-    .operator:hover {
-      background: #e08a00;
-    }
-
-    .calendar {
-      width: 250px;
-      padding: 15px;
-      border-radius: 10px;
-      background: #f9f9f9;
-      font-size: 14px;
-    }
-
-    .calendar h3 {
+    /* Stopwatch & Timer */
+    .time-display {
+      font-size: 2rem;
+      margin: 10px 0;
       text-align: center;
-      margin-bottom: 10px;
     }
 
-    .calendar table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .calendar th, .calendar td {
+    .controls {
       text-align: center;
+      margin-top: 10px;
+    }
+
+    .controls button {
+      margin: 0 5px;
+      padding: 8px 16px;
+      font-size: 1rem;
+    }
+
+    input[type="number"] {
+      width: 60px;
       padding: 5px;
-    }
-
-    .calendar th {
-      background: #ddd;
-    }
-
-    .calendar td.today {
-      background: #ff9500;
-      color: white;
-      border-radius: 50%;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Jam -->
-  <div class="clock" id="clock">00:00:00</div>
+<!-- Jam -->
+<div class="clock" id="clock">00:00:00</div>
 
+<!-- Navigasi -->
+<div class="nav">
+  <button class="active" onclick="showTab('kalkulator')">Kalkulator</button>
+  <button onclick="showTab('stopwatch')">Stopwatch</button>
+  <button onclick="showTab('timer')">Timer</button>
+</div>
+
+<!-- Konten -->
+<div class="content">
   <!-- Kalkulator -->
-  <div class="calculator">
+  <div id="kalkulator">
     <input type="text" id="display" autofocus />
     <div class="buttons">
-      <button onclick="clearDisplay()">C</button>
-      <button onclick="appendValue('/')">/</button>
-      <button onclick="appendValue('*')">*</button>
-      <button onclick="deleteLast()">⌫</button>
+      <button class="calc-btn" onclick="clearDisplay()">C</button>
+      <button class="calc-btn" onclick="appendValue('/')">/</button>
+      <button class="calc-btn" onclick="appendValue('*')">*</button>
+      <button class="calc-btn" onclick="deleteLast()">⌫</button>
 
-      <button onclick="appendValue('7')">7</button>
-      <button onclick="appendValue('8')">8</button>
-      <button onclick="appendValue('9')">9</button>
-      <button onclick="appendValue('-')" class="operator">-</button>
+      <button class="calc-btn" onclick="appendValue('7')">7</button>
+      <button class="calc-btn" onclick="appendValue('8')">8</button>
+      <button class="calc-btn" onclick="appendValue('9')">9</button>
+      <button class="calc-btn operator" onclick="appendValue('-')">-</button>
 
-      <button onclick="appendValue('4')">4</button>
-      <button onclick="appendValue('5')">5</button>
-      <button onclick="appendValue('6')">6</button>
-      <button onclick="appendValue('+')" class="operator">+</button>
+      <button class="calc-btn" onclick="appendValue('4')">4</button>
+      <button class="calc-btn" onclick="appendValue('5')">5</button>
+      <button class="calc-btn" onclick="appendValue('6')">6</button>
+      <button class="calc-btn operator" onclick="appendValue('+')">+</button>
 
-      <button onclick="appendValue('1')">1</button>
-      <button onclick="appendValue('2')">2</button>
-      <button onclick="appendValue('3')">3</button>
-      <button onclick="calculate()" class="operator">=</button>
+      <button class="calc-btn" onclick="appendValue('1')">1</button>
+      <button class="calc-btn" onclick="appendValue('2')">2</button>
+      <button class="calc-btn" onclick="appendValue('3')">3</button>
+      <button class="calc-btn operator" onclick="calculate()">=</button>
 
-      <button onclick="appendValue('0')">0</button>
-      <button onclick="appendValue('.')">.</button>
+      <button class="calc-btn" onclick="appendValue('0')">0</button>
+      <button class="calc-btn" onclick="appendValue('.')">.</button>
     </div>
   </div>
 
-  <!-- Kalender -->
-  <div class="calendar" id="calendar"></div>
+  <!-- Stopwatch -->
+  <div id="stopwatch" class="hidden">
+    <div class="time-display" id="stopwatchDisplay">00:00:00</div>
+    <div class="controls">
+      <button onclick="startStopwatch()">Start</button>
+      <button onclick="stopStopwatch()">Pause</button>
+      <button onclick="resetStopwatch()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Timer -->
+  <div id="timer" class="hidden">
+    <div>
+      <label>Menit: <input type="number" id="timerMinutes" value="0" min="0"></label>
+      <label>Detik: <input type="number" id="timerSeconds" value="0" min="0" max="59"></label>
+    </div>
+    <div class="time-display" id="timerDisplay">00:00</div>
+    <div class="controls">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  const display = document.getElementById('display');
-
-  function appendValue(value) {
-    display.value += value;
-  }
-
-  function clearDisplay() {
-    display.value = '';
-  }
-
-  function deleteLast() {
-    display.value = display.value.slice(0, -1);
-  }
-
-  function calculate() {
-    try {
-      display.value = eval(display.value);
-    } catch {
-      display.value = 'Error';
-    }
-  }
-
-  // Keyboard support
-  document.addEventListener('keydown', function(event) {
-    const key = event.key;
-    if ((/\d/).test(key) || ['+', '-', '*', '/', '.'].includes(key)) {
-      appendValue(key);
-    } else if (key === 'Enter') {
-      event.preventDefault();
-      calculate();
-    } else if (key === 'Backspace') {
-      deleteLast();
-    } else if (key === 'Escape') {
-      clearDisplay();
-    }
-  });
-
   // Jam Digital
   function updateClock() {
     const now = new Date();
-    const time = now.toLocaleTimeString();
-    document.getElementById('clock').textContent = time;
+    document.getElementById('clock').textContent = now.toLocaleTimeString();
   }
   setInterval(updateClock, 1000);
   updateClock();
 
-  // Kalender
-  function generateCalendar() {
-    const calendar = document.getElementById('calendar');
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+  // Navigasi Tab
+  function showTab(tab) {
+    ['kalkulator', 'stopwatch', 'timer'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(tab).classList.remove('hidden');
 
-    const monthNames = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-
-    const firstDay = new Date(year, month, 1).getDay(); // 0 = Minggu
-    const lastDate = new Date(year, month + 1, 0).getDate();
-    const today = now.getDate();
-
-    let html = `<h3>${monthNames[month]} ${year}</h3>`;
-    html += "<table><tr><th>Min</th><th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th></tr><tr>";
-
-    let day = 0;
-    for (let i = 0; i < firstDay; i++) {
-      html += "<td></td>";
-      day++;
-    }
-
-    for (let date = 1; date <= lastDate; date++) {
-      if (day % 7 === 0) html += "</tr><tr>";
-      const isToday = date === today ? ' class="today"' : '';
-      html += `<td${isToday}>${date}</td>`;
-      day++;
-    }
-
-    html += "</tr></table>";
-    calendar.innerHTML = html;
+    document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
   }
 
-  generateCalendar();
-</script>
+  // Kalkulator
+  const display = document.getElementById('display');
+  function appendValue(value) { display.value += value; }
+  function clearDisplay() { display.value = ''; }
+  function deleteLast() { display.value = display.value.slice(0, -1); }
+  function calculate() {
+    try { display.value = eval(display.value); }
+    catch { display.value = 'Error'; }
+  }
 
+  document.addEventListener('keydown', function(event) {
+    const key = event.key;
+    if ((/\d/).test(key) || ['+', '-', '*', '/', '.'].includes(key)) appendValue(key);
+    else if (key === 'Enter') calculate();
+    else if (key === 'Backspace') deleteLast();
+    else if (key === 'Escape') clearDisplay();
+  });
+
+  // Stopwatch
+  let swInterval, swSeconds = 0;
+  function updateStopwatch() {
+    const h = String(Math.floor(swSeconds / 3600)).padStart(2, '0');
+    const m = String(Math.floor((swSeconds % 3600) / 60)).padStart(2, '0');
+    const s = String(swSeconds % 60).padStart(2, '0');
+    document.getElementById('stopwatchDisplay').textContent = `${h}:${m}:${s}`;
+  }
+  function startStopwatch() {
+    if (!swInterval) swInterval = setInterval(() => { swSeconds++; updateStopwatch(); }, 1000);
+  }
+  function stopStopwatch() {
+    clearInterval(swInterval);
+    swInterval = null;
+  }
+  function resetStopwatch() {
+    stopStopwatch();
+    swSeconds = 0;
+    updateStopwatch();
+  }
+
+  // Timer
+  let timerInterval, remainingSeconds = 0;
+  function updateTimerDisplay() {
+    const m = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+    const s = String(remainingSeconds % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+  }
+  function startTimer() {
+    if (!timerInterval) {
+      const min = parseInt(document.getElementById('timerMinutes').value);
+      const sec = parseInt(document.getElementById('timerSeconds').value);
+      if (remainingSeconds === 0) remainingSeconds = min * 60 + sec;
+      timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert('Waktu habis!');
+        }
+      }, 1000);
+    }
+  }
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  function resetTimer() {
+    pauseTimer();
+    remainingSeconds = 0;
+    updateTimerDisplay();
+  }
+
+  // Inisialisasi tampilan awal
+  updateStopwatch();
+  updateTimerDisplay();
+</script>
 </body>
 </html>
