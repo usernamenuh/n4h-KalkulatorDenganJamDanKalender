@@ -389,31 +389,34 @@
   // Aktifkan dark mode jika sebelumnya sudah dipilih
   setDarkMode(localStorage.getItem('darkMode') === '1');
 
-  // Waktu Sholat API (menggunakan API jadwalsholat)
+  // Waktu Sholat API (menggunakan Aladhan.com)
   async function loadSholatTimes() {
-    const kota = "jakarta"; // Ganti sesuai kebutuhan
+    // Koordinat Jakarta, ganti jika ingin kota lain
+    const latitude = -6.2;
+    const longitude = 106.816666;
     const today = new Date();
-    const tgl = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
     try {
-      const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/kota/667/tanggal/${tgl}`);
+      const res = await fetch(`https://api.aladhan.com/v1/calendar?latitude=${latitude}&longitude=${longitude}&method=2&month=${month}&year=${year}`);
       const data = await res.json();
-      if (data && data.data && data.data.jadwal) {
-        const j = data.data.jadwal;
+      if (data && data.data && data.data[day - 1]) {
+        const timings = data.data[day - 1].timings;
         document.getElementById('sholatTimes').innerHTML = `
           <table style="width:100%;margin:auto;">
-            <tr><td>Imsak</td><td>${j.imsak}</td></tr>
-            <tr><td>Subuh</td><td>${j.subuh}</td></tr>
-            <tr><td>Dzuhur</td><td>${j.dzuhur}</td></tr>
-            <tr><td>Ashar</td><td>${j.ashar}</td></tr>
-            <tr><td>Maghrib</td><td>${j.maghrib}</td></tr>
-            <tr><td>Isya</td><td>${j.isya}</td></tr>
+            <tr><td>Subuh</td><td>${timings.Fajr.split(' ')[0]}</td></tr>
+            <tr><td>Dzuhur</td><td>${timings.Dhuhr.split(' ')[0]}</td></tr>
+            <tr><td>Ashar</td><td>${timings.Asr.split(' ')[0]}</td></tr>
+            <tr><td>Maghrib</td><td>${timings.Maghrib.split(' ')[0]}</td></tr>
+            <tr><td>Isya</td><td>${timings.Isha.split(' ')[0]}</td></tr>
           </table>
-          <div style="font-size:0.9em;margin-top:8px;">Wilayah: Jakarta</div>
+          <div style="font-size:0.9em;margin-top:8px;">Wilayah: Jakarta (Aladhan.com)</div>
         `;
       } else {
         document.getElementById('sholatTimes').textContent = "Gagal memuat data.";
       }
-    } catch {
+    } catch (err) {
       document.getElementById('sholatTimes').textContent = "Gagal memuat data.";
     }
   }
@@ -422,6 +425,9 @@
   document.querySelector('.nav').addEventListener('click', function(e) {
     if (e.target.textContent.includes('Waktu Sholat')) loadSholatTimes();
   });
+
+  // Tambahkan baris ini agar waktu sholat langsung dimuat saat halaman dibuka
+  loadSholatTimes();
 </script>
 
 </body>
