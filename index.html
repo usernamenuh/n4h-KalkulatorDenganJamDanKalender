@@ -79,6 +79,34 @@
       cursor: pointer;
     }
 
+    /* Table Waktu Sholat */
+.sholat-table {
+  width: 100%;
+  max-width: 320px;
+  margin: 16px auto 0 auto;
+  border-collapse: collapse;
+  font-size: 1.1rem;
+}
+.sholat-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+.sholat-table tr:last-child td {
+  border-bottom: none;
+}
+.sholat-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+.sholat-table td:last-child {
+  text-align: right;
+  font-family: monospace;
+  font-weight: bold;
+}
+body.dark .sholat-table td {
+  border-bottom: 1px solid #333;
+}
+
     button.calc-btn:hover { background: #ddd; }
     .operator { background: #ff9500; color: white; }
 
@@ -404,7 +432,7 @@
       if (data && data.data && data.data[day - 1]) {
         const timings = data.data[day - 1].timings;
         document.getElementById('sholatTimes').innerHTML = `
-          <table style="width:100%;margin:auto;">
+          <table class="sholat-table">
             <tr><td>Subuh</td><td>${timings.Fajr.split(' ')[0]}</td></tr>
             <tr><td>Dzuhur</td><td>${timings.Dhuhr.split(' ')[0]}</td></tr>
             <tr><td>Ashar</td><td>${timings.Asr.split(' ')[0]}</td></tr>
