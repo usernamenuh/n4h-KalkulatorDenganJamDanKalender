@@ -193,6 +193,7 @@
   <button onclick="showTab('timer', event)">Timer</button>
   <button onclick="showTab('kalender', event)">Kalender</button>
   <button onclick="showTab('quote', event)">Quote</button>
+  <button onclick="showTab('sholat', event)">Waktu Sholat</button> <!-- Tambahkan ini -->
 </div>
 
 <div class="content">
@@ -252,6 +253,13 @@
     <div class="quote" id="quoteText">"Belajar adalah investasi terbaik."</div>
   </div>
 
+  <!-- Waktu Sholat -->
+  <div id="sholat" class="hidden">
+    <h3 style="text-align:center;">Waktu Sholat Hari Ini</h3>
+    <div id="sholatTimes" style="max-width:300px;margin:auto;text-align:center;">
+      <em>Memuat...</em>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -264,7 +272,7 @@
 
   // Navigasi Tab
   function showTab(tab, e) {
-    ['kalkulator', 'stopwatch', 'timer', 'kalender', 'quote'].forEach(id => {
+    ['kalkulator', 'stopwatch', 'timer', 'kalender', 'quote', 'sholat'].forEach(id => {
       document.getElementById(id).classList.add('hidden');
     });
     document.getElementById(tab).classList.remove('hidden');
@@ -380,6 +388,40 @@
   darkBtn.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
   // Aktifkan dark mode jika sebelumnya sudah dipilih
   setDarkMode(localStorage.getItem('darkMode') === '1');
+
+  // Waktu Sholat API (menggunakan API jadwalsholat)
+  async function loadSholatTimes() {
+    const kota = "jakarta"; // Ganti sesuai kebutuhan
+    const today = new Date();
+    const tgl = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    try {
+      const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/kota/667/tanggal/${tgl}`);
+      const data = await res.json();
+      if (data && data.data && data.data.jadwal) {
+        const j = data.data.jadwal;
+        document.getElementById('sholatTimes').innerHTML = `
+          <table style="width:100%;margin:auto;">
+            <tr><td>Imsak</td><td>${j.imsak}</td></tr>
+            <tr><td>Subuh</td><td>${j.subuh}</td></tr>
+            <tr><td>Dzuhur</td><td>${j.dzuhur}</td></tr>
+            <tr><td>Ashar</td><td>${j.ashar}</td></tr>
+            <tr><td>Maghrib</td><td>${j.maghrib}</td></tr>
+            <tr><td>Isya</td><td>${j.isya}</td></tr>
+          </table>
+          <div style="font-size:0.9em;margin-top:8px;">Wilayah: Jakarta</div>
+        `;
+      } else {
+        document.getElementById('sholatTimes').textContent = "Gagal memuat data.";
+      }
+    } catch {
+      document.getElementById('sholatTimes').textContent = "Gagal memuat data.";
+    }
+  }
+
+  // Muat waktu sholat saat tab dibuka
+  document.querySelector('.nav').addEventListener('click', function(e) {
+    if (e.target.textContent.includes('Waktu Sholat')) loadSholatTimes();
+  });
 </script>
 
 </body>
