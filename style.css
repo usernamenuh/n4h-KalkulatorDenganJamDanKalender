@@ -1,15 +1,4 @@
-
-   .clock {
-      font-size: 2rem;
-      background: #222;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    .nav {
+.nav {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
