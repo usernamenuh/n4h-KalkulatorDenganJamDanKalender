@@ -1,29 +1,4 @@
 
-
-/* Table Waktu Sholat */
-.sholat-table {
-  width: 100%;
-  max-width: 320px;
-  margin: 16px auto 0 auto;
-  border-collapse: collapse;
-  font-size: 1.1rem;
-}
-.sholat-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-}
-.sholat-table tr:last-child td {
-  border-bottom: none;
-}
-.sholat-table td:first-child {
-  text-align: left;
-  font-weight: 500;
-}
-.sholat-table td:last-child {
-  text-align: right;
-  font-family: monospace;
-  font-weight: bold;
-}
 body.dark .sholat-table td {
   border-bottom: 1px solid #333;
 }
